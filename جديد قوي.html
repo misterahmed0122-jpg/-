@@ -1,0 +1,1513 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ملف الطالب الاحترافي | Clean UI</title>
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+
+    <style>
+        :root {
+            /* Clean & Professional Palette */
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --primary-soft: #eef2ff;
+            --secondary: #64748b;
+            --success: #059669;
+            --success-soft: #d1fae5;
+            --danger: #dc2626;
+            --danger-soft: #fee2e2;
+            --warning: #d97706;
+            --warning-soft: #fef3c7;
+            
+            --dark: #0f172a;
+            --text-main: #334155;
+            --text-muted: #64748b;
+            
+            --bg-body: #f3f4f6; 
+            --bg-card: #ffffff; 
+            --bg-alt: #f8fafc; 
+            
+            --border: #e2e8f0;
+            --border-focus: #c7d2fe;
+            
+            /* Modern Dimensions */
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --shadow-focus: 0 0 0 3px rgba(79, 70, 229, 0.15);
+            
+            --font-heading: 'Tajawal', sans-serif;
+            --font-body: 'Cairo', sans-serif;
+            --transition: all 0.2s ease-in-out;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: var(--font-body); background-color: var(--bg-body); color: var(--text-main); display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px 15px; line-height: 1.6; margin: 0;}
+
+        /* --- كود الخلفية المنبثقة --- */
+        .main-modal-bg {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 9000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .btn-open-modal {
+            padding: 15px 30px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            font-family: var(--font-heading);
+            font-size: 1.2rem;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+        }
+        .btn-open-modal:hover { background: var(--primary-hover); transform: translateY(-3px); }
+
+        /* ================= إخفاء أشرطة التمرير ================= */
+        .profile-content::-webkit-scrollbar, .timeline::-webkit-scrollbar, .notes-list::-webkit-scrollbar, .tabs-container::-webkit-scrollbar, .table-responsive::-webkit-scrollbar { display: none; }
+        .profile-content, .timeline, .notes-list, .tabs-container, .table-responsive { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* ================= MODAL CONTAINER ================= */
+        .profile-wrapper { width: 1100px; max-width: 100%; background: var(--bg-card); border-radius: var(--radius-xl); box-shadow: var(--shadow-lg); display: flex; flex-direction: column; max-height: 95vh; position: relative; border: 1px solid var(--border); transition: var(--transition); }
+
+        /* ================= TOP HEADER ================= */
+        .profile-top-header { display: flex; justify-content: space-between; align-items: flex-start; padding: 30px 40px; border-bottom: 1px solid var(--border); flex-shrink: 0; flex-wrap: wrap; gap: 20px; background: var(--bg-card); border-radius: var(--radius-xl) var(--radius-xl) 0 0; position: relative; z-index: 50; }
+        
+        .user-identity { display: flex; align-items: center; gap: 20px; flex: 1; min-width: 300px; }
+        .avatar-wrap { width: 90px; height: 90px; border-radius: 50%; position: relative; background: var(--bg-body); display: flex; justify-content: center; align-items: center; flex-shrink: 0; border: 1px solid var(--border); }
+        .avatar-wrap img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; padding: 3px;}
+        .btn-edit-avatar { position: absolute; bottom: 0; right: 0; width: 28px; height: 28px; background: white; color: var(--text-muted); border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; border: 1px solid var(--border); transition: var(--transition); font-size: 0.9rem; box-shadow: var(--shadow-sm); }
+        .btn-edit-avatar:hover { color: var(--primary); border-color: var(--primary); }
+
+        .user-details { display: flex; flex-direction: column; gap: 6px; }
+        .user-title-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .student-name { font-family: var(--font-heading); font-weight: 800; font-size: 1.6rem; color: var(--dark); margin: 0; line-height: 1; }
+        
+        .status-dropdown-container { position: relative; }
+        .status-badge { padding: 4px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; border: 1px solid transparent; transition: var(--transition); cursor: pointer; user-select: none; }
+        .status-badge.active { background: var(--success-soft); color: var(--success); border-color: #a7f3d0; }
+        .status-badge.blocked { background: var(--danger-soft); color: var(--danger); border-color: #fecaca; }
+        .status-badge:hover { filter: brightness(0.95); }
+        
+        .header-status-menu { position: absolute; top: calc(100% + 5px); right: 0; background: white; border: 1px solid var(--border); border-radius: var(--radius-sm); box-shadow: var(--shadow-md); min-width: 170px; padding: 6px; display: none; z-index: 100; animation: fadeIn 0.2s ease; }
+        .header-status-menu.show { display: block; }
+        .header-status-item { padding: 8px 12px; font-size: 0.85rem; font-weight: 700; color: var(--text-main); cursor: pointer; border-radius: 4px; display: flex; align-items: center; gap: 8px; transition: var(--transition); }
+        .header-status-item:hover { background: var(--bg-body); }
+
+        .user-meta { display: flex; align-items: center; gap: 15px; color: var(--text-muted); font-size: 0.85rem; font-weight: 600; flex-wrap: wrap; }
+        .user-meta span { display: flex; align-items: center; gap: 5px; }
+        .user-meta i { color: var(--secondary); font-size: 1.1rem; }
+        .user-meta .id-text { font-family: monospace; letter-spacing: 0.5px; color: var(--dark); font-weight: 700; }
+
+        .header-actions { display: flex; flex-direction: column; gap: 10px; align-items: flex-end; justify-content: center; height: 100%; margin-top: 10px; }
+        .user-actions-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        
+        .action-btn { padding: 8px 16px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: white; font-family: var(--font-heading); font-weight: 700; font-size: 0.85rem; color: var(--text-main); cursor: pointer; display: flex; align-items: center; gap: 6px; transition: var(--transition); box-shadow: var(--shadow-sm); }
+        .action-btn:hover { background: var(--bg-alt); border-color: var(--text-muted); }
+        .action-btn.wa { color: #059669; border-color: #a7f3d0; background: #ecfdf5; box-shadow: none; }
+        .action-btn.wa:hover { background: #d1fae5; }
+        .action-btn.print-card { color: #4f46e5; border-color: #c7d2fe; background: #eef2ff; box-shadow: none; }
+        .action-btn.print-card:hover { background: #4f46e5; color: white; border-color: #4f46e5; }
+        /* تصميم زر الإغلاق الجديد ضمن القائمة */
+        .action-btn.close { color: var(--danger); border-color: #fecaca; background: #fef2f2; box-shadow: none; padding: 8px 12px; }
+        .action-btn.close:hover { background: var(--danger); color: white; border-color: var(--danger); }
+        
+        .action-btn i { font-size: 1.1rem; }
+
+        /* ================= MAIN CONTENT & TABS ================= */
+        .profile-content { padding: 0; display: flex; flex-direction: column; background: var(--bg-alt); overflow-y: auto; flex: 1; border-radius: 0 0 var(--radius-xl) var(--radius-xl); }
+        
+        .tabs-container { display: flex; gap: 25px; border-bottom: 1px solid var(--border); padding: 0 40px; background: var(--bg-card); overflow-x: auto; flex-shrink: 0; position: sticky; top: 0; z-index: 40;}
+        .tab-btn { padding: 15px 5px; background: transparent; border: none; font-family: var(--font-heading); font-weight: 700; font-size: 0.95rem; color: var(--text-muted); cursor: pointer; transition: var(--transition); display: flex; align-items: center; gap: 8px; white-space: nowrap; border-bottom: 3px solid transparent; margin-bottom: -1px; }
+        .tab-btn:hover { color: var(--dark); }
+        .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); color: var(--dark); }
+
+        .tab-pane { display: none; animation: fadeIn 0.3s ease; padding: 30px 40px; }
+        .tab-pane.active { display: block; }
+
+        .section-title { font-family: var(--font-heading); font-weight: 800; font-size: 1.1rem; color: var(--dark); display: flex; align-items: center; gap: 8px; margin-bottom: 20px; }
+        .section-title i { color: var(--text-muted); font-size: 1.2rem; font-weight: normal; }
+
+        /* ================= TAB 1: OVERVIEW ================= */
+        .kpi-wrapper { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 30px; }
+        .kpi-box { background: var(--bg-card); padding: 20px; border-radius: var(--radius-md); border: 1px solid var(--border); display: flex; flex-direction: column; gap: 5px; box-shadow: var(--shadow-sm); cursor: pointer; transition: var(--transition); }
+        .kpi-box:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+        .kpi-label { font-size: 0.8rem; font-weight: 700; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
+        .kpi-label i { font-size: 1.1rem; }
+        .kpi-value { font-family: var(--font-heading); font-size: 1.6rem; font-weight: 900; color: var(--dark); line-height: 1; margin: 5px 0;}
+        .kpi-subtext { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; display: flex; align-items: center; gap: 4px; }
+        .progress-bar-bg { width: 100%; height: 4px; background: var(--bg-body); border-radius: 4px; margin-top: auto; overflow: hidden; }
+        .progress-bar-fill { height: 100%; border-radius: 4px; transition: width 0.5s ease; }
+
+        /* Modal Styles */
+        .inner-modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 99999; animation: fadeIn 0.2s ease; }
+        .modal-content { background: white; border-radius: var(--radius-lg); padding: 30px; width: 400px; max-width: 90%; box-shadow: var(--shadow-lg); }
+        .modal-content h3 { font-family: var(--font-heading); font-weight: 800; color: var(--dark); margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+        .modal-content .form-group { margin-bottom: 20px; }
+        .modal-content label { font-weight: 700; color: var(--text-main); margin-bottom: 5px; display: block; }
+        .modal-actions { display: flex; gap: 10px; margin-top: 25px; }
+        .modal-actions button { flex: 1; padding: 12px; border-radius: var(--radius-sm); font-weight: 700; cursor: pointer; transition: var(--transition); }
+        .btn-cancel { background: white; border: 1px solid var(--border); color: var(--text-main); }
+        .btn-cancel:hover { background: var(--bg-body); }
+        .btn-save { background: var(--primary); border: none; color: white; }
+        .btn-save:hover { background: var(--primary-hover); }
+
+        /* Timeline & Notes */
+        .overview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
+        .overview-panel { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 20px; box-shadow: var(--shadow-sm); }
+        .panel-heading { font-family: var(--font-heading); font-weight: 800; font-size: 1rem; color: var(--dark); margin-bottom: 20px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--bg-body); padding-bottom: 10px;}
+
+        .timeline { display: flex; flex-direction: column; gap: 15px; position: relative; padding-right: 15px; max-height: 300px; overflow-y: auto;}
+        .timeline::before { content: ''; position: absolute; right: 4px; top: 5px; bottom: 5px; width: 2px; background: var(--border); }
+        .timeline-item { position: relative; display: flex; flex-direction: column; gap: 2px; animation: fadeIn 0.3s ease; }
+        .timeline-dot { position: absolute; right: -15px; top: 4px; width: 10px; height: 10px; border-radius: 50%; background: var(--primary); border: 2px solid white; box-shadow: 0 0 0 1px var(--border); z-index: 2; }
+        .timeline-item.done .timeline-dot { background: var(--success); }
+        .timeline-item.warning .timeline-dot { background: var(--warning); }
+        .timeline-item.danger .timeline-dot { background: var(--danger); }
+        .timeline-date { font-size: 0.7rem; color: var(--text-muted); font-weight: 700; }
+        .timeline-content { font-size: 0.85rem; color: var(--dark); font-weight: 600; }
+
+        .notes-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; max-height: 250px; overflow-y: auto; padding-left: 5px;}
+        .note-card { background: var(--bg-alt); border: 1px solid var(--border); padding: 12px; border-radius: var(--radius-sm); border-right: 3px solid var(--secondary); }
+        .note-card.alert { border-right-color: var(--warning); background: var(--warning-soft); border-color: #fde68a; }
+        .note-header { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 0.7rem; color: var(--text-muted); font-weight: 700; }
+        .note-text { font-size: 0.85rem; color: var(--dark); font-weight: 500; }
+        
+        .add-note-box { display: flex; gap: 10px; }
+        .add-note-box input { flex: 1; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: inherit; font-size: 0.85rem; outline: none; }
+        .add-note-box input:focus { border-color: var(--primary); }
+        .add-note-box button { background: var(--primary); color: white; border: none; padding: 0 15px; border-radius: var(--radius-sm); cursor: pointer; transition: 0.2s; }
+        .add-note-box button:hover { background: var(--primary-hover); }
+
+        /* ================= TAB 2: FINANCE ================= */
+        .fin-summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 25px; }
+        .fin-card { background: var(--bg-card); padding: 15px 20px; border-radius: var(--radius-md); border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
+        .fin-card span { font-size: 0.8rem; color: var(--text-muted); font-weight: 700; display: block; margin-bottom: 5px; }
+        .fin-card strong { font-family: var(--font-heading); font-size: 1.5rem; font-weight: 900; display: block; line-height: 1; }
+        .fin-card.total strong { color: var(--dark); }
+        .fin-card.paid strong { color: var(--success); }
+        .fin-card.remain strong { color: var(--danger); }
+
+        .fin-layout { display: grid; grid-template-columns: 1fr 2fr; gap: 20px; align-items: start; }
+        
+        .fin-panel { background: var(--bg-card); padding: 20px; border-radius: var(--radius-md); border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
+        .fin-panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .fin-panel-title { font-family: var(--font-heading); font-size: 1rem; font-weight: 800; color: var(--dark); display: flex; align-items: center; gap: 6px; }
+
+        .table-responsive { overflow-x: auto; }
+        .fin-table { width: 100%; border-collapse: collapse; text-align: right; }
+        .fin-table th { padding: 10px; font-size: 0.8rem; color: var(--text-muted); font-weight: 700; border-bottom: 2px solid var(--border); white-space: nowrap; }
+        .fin-table td { padding: 12px 10px; font-size: 0.85rem; color: var(--dark); font-weight: 600; border-bottom: 1px solid var(--border); vertical-align: middle; }
+        .fin-table tr:last-child td { border-bottom: none; }
+        
+        .amount-col { font-family: var(--font-heading); font-weight: 800; font-size: 0.95rem; }
+        .amount-col.paid { color: var(--success); }
+        .amount-col.pending { color: var(--danger); }
+        
+        .btn-icon-danger { width: 28px; height: 28px; border-radius: 6px; background: transparent; color: var(--text-muted); border: none; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: var(--transition); font-size: 1.1rem; }
+        .btn-icon-danger:hover { background: var(--danger-soft); color: var(--danger); }
+
+        /* ================= TAB 3: DOCUMENTS ================= */
+        .upload-zone { border: 2px dashed #cbd5e1; border-radius: var(--radius-md); padding: 40px 20px; text-align: center; background: var(--bg-alt); cursor: pointer; transition: var(--transition); margin-bottom: 25px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+        .upload-zone:hover { border-color: var(--primary); background: var(--primary-soft); }
+        .upload-zone i { font-size: 3rem; color: var(--primary); opacity: 0.8; }
+        .upload-zone p { font-size: 1rem; font-weight: 700; color: var(--text-main); margin: 0; }
+        .upload-zone span { color: var(--primary); text-decoration: underline; font-weight: 600; }
+        
+        .doc-smart-form { background: white; border: 1px solid var(--primary); border-radius: var(--radius-md); padding: 20px; margin-bottom: 25px; box-shadow: var(--shadow-md); display: none; animation: fadeIn 0.3s ease; border-right: 4px solid var(--primary); }
+        .doc-smart-header { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; font-weight: 800; color: var(--dark); font-family: var(--font-heading); font-size: 1.1rem; }
+        .file-name-preview { background: var(--bg-alt); padding: 8px 12px; border-radius: var(--radius-sm); border: 1px dashed var(--border); font-size: 0.85rem; font-family: monospace; color: var(--text-muted); margin-bottom: 15px; display: inline-block;}
+
+        .docs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px; }
+        .doc-card { display: flex; align-items: center; justify-content: space-between; padding: 15px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg-card); transition: var(--transition); }
+        .doc-card:hover { border-color: var(--primary); box-shadow: var(--shadow-sm); }
+        .doc-info-wrap { display: flex; align-items: center; gap: 15px; }
+        .doc-icon { width: 45px; height: 45px; border-radius: 10px; background: #fee2e2; color: #dc2626; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; }
+        .doc-icon.img { background: #e0f2fe; color: #0284c7; }
+        .doc-icon.txt { background: #fef3c7; color: #d97706; }
+        .doc-details { display: flex; flex-direction: column; text-align: right; }
+        .doc-details h4 { font-size: 0.95rem; font-weight: 800; color: var(--dark); margin-bottom: 2px; }
+        .doc-details span { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; }
+        .doc-actions { display: flex; gap: 5px; }
+        .doc-btn { width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--border); background: white; color: var(--text-muted); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: var(--transition); }
+        .doc-btn:hover { background: var(--bg-body); color: var(--primary); }
+        .doc-btn.view:hover { background: var(--success-soft); color: var(--success); border-color: transparent; }
+        .doc-btn.del:hover { background: var(--danger-soft); color: var(--danger); border-color: transparent; }
+
+        /* ================= TAB 4: SETTINGS / FORMS ================= */
+        .form-section { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 25px; margin-bottom: 20px; box-shadow: var(--shadow-sm); }
+        .form-section-title { font-size: 0.95rem; font-weight: 800; color: var(--dark); margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
+        
+        #edit.tab-pane { padding-bottom: 150px; }
+
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; position: relative; z-index: 1;}
+        .form-group.span-full { grid-column: 1 / -1; }
+        .form-group label { font-size: 0.85rem; font-weight: 700; color: var(--text-main); }
+        
+        .input-clean { width: 100%; padding: 10px 14px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: inherit; font-size: 0.9rem; transition: var(--transition); color: var(--dark); font-weight: 600; }
+        .input-clean:focus { outline: none; border-color: var(--primary); box-shadow: var(--shadow-focus); }
+        .input-clean:disabled { background: var(--bg-body); color: var(--text-muted); cursor: not-allowed; }
+
+        /* Dropdown Fixes */
+        .custom-dropdown { position: relative; width: 100%; }
+        .dropdown-trigger { cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: #fff; }
+        .dropdown-menu { position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: white; border: 1px solid var(--border); border-radius: var(--radius-sm); box-shadow: var(--shadow-lg); z-index: 10000; overflow-y: auto; display: none; max-height: 220px; padding: 4px; }
+        .dropdown-menu.show { display: block; animation: fadeIn 0.2s ease; }
+        .dropdown-item { padding: 8px 12px; font-size: 0.85rem; font-weight: 600; cursor: pointer; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; transition: 0.15s; color: var(--text-main);}
+        .dropdown-item:hover { background: var(--bg-body); }
+        .dropdown-item.selected { background: var(--primary-soft); color: var(--primary); }
+        .dropdown-item i.ri-check-line { display: none; color: var(--primary); font-size: 1rem; }
+        .dropdown-item.selected i.ri-check-line { display: block; }
+
+        .form-actions { display: flex; justify-content: flex-end; margin-top: 20px; position: relative; z-index: 1;}
+        .btn-primary { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: var(--radius-sm); font-family: var(--font-heading); font-weight: 700; font-size: 0.9rem; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: var(--transition); box-shadow: var(--shadow-sm); }
+        .btn-primary:hover { background: var(--primary-hover); }
+
+        .info-note { background: var(--warning-soft); border: 1px solid #fde68a; color: #92400e; padding: 12px 15px; border-radius: var(--radius-sm); font-size: 0.85rem; font-weight: 600; display: flex; align-items: flex-start; gap: 10px; margin-bottom: 20px; line-height: 1.5;}
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Toast */
+        .toast { position: fixed; bottom: 20px; left: 20px; background: var(--dark); color: white; padding: 12px 20px; border-radius: var(--radius-sm); font-weight: 600; font-size: 0.85rem; box-shadow: var(--shadow-lg); transform: translateY(100px); opacity: 0; transition: var(--transition); z-index: 99999; display: flex; align-items: center; gap: 8px; border-right: 4px solid var(--primary);}
+        .toast.success { border-right-color: var(--success); }
+        .toast.error { border-right-color: var(--danger); }
+        .toast.show { transform: translateY(0); opacity: 1; }
+
+        @media (max-width: 900px) {
+            .profile-top-header { flex-direction: column; align-items: flex-start; padding: 20px; }
+            .user-identity { width: 100%; }
+            .header-actions { align-items: flex-start; width: 100%; margin-top: 10px; margin-left: 0; }
+            .profile-content { padding: 0; max-height: none; }
+            .tab-pane { padding: 20px; }
+            .overview-grid, .fin-layout, .docs-grid { flex-direction: column; grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- زر لفتح الملف المنبثق -->
+    <button class="btn-open-modal" onclick="openProfile()">
+        <i class="ri-folder-user-fill"></i> فتح ملف الطالب
+    </button>
+
+    <!-- حاوية المنبثق -->
+    <div class="main-modal-bg" id="mainOverlayBg" onclick="if(event.target===this) closeProfile()">
+        
+        <div class="profile-wrapper" id="mainProfileWrapper" onclick="event.stopPropagation()">
+            
+            <div class="profile-top-header">
+                <div class="user-identity">
+                    <div class="avatar-wrap">
+                        <img id="mainProfilePic" src="data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23f1f5f9'/%3E%3Ccircle cx='50' cy='40' r='22' fill='%2364748b'/%3E%3Cpath d='M15 100 C 15 65, 85 65, 85 100' fill='%2364748b'/%3E%3C/svg%3E" alt="Student">
+                        <label class="btn-edit-avatar" title="تحديث الصورة" for="profilePicInput"><i class="ri-camera-line"></i></label>
+                        <input type="file" id="profilePicInput" hidden accept="image/*" onchange="updateProfilePic(this)">
+                    </div>
+                    
+                    <div class="user-details">
+                        <div class="user-title-row">
+                            <h2 class="student-name" id="headerName">أحمد محمد علي عبد الرحمن</h2>
+                            <div class="status-dropdown-container">
+                                <span class="status-badge active" id="mainStatusBadge" onclick="toggleStatusMenu(event)">
+                                    <i class="ri-checkbox-circle-fill"></i> طالب نشط <i class="ri-arrow-down-s-line"></i>
+                                </span>
+                                <div class="header-status-menu" id="headerStatusMenu">
+                                    <div class="header-status-item" onclick="changeAccountStatus('active')">
+                                        <i class="ri-user-follow-fill" style="color: var(--success)"></i> تنشيط الحساب للوصول
+                                    </div>
+                                    <div class="header-status-item" onclick="changeAccountStatus('blocked')">
+                                        <i class="ri-user-unfollow-fill" style="color: var(--danger)"></i> حظر الحساب نهائياً
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="user-meta">
+                            <span><i class="ri-fingerprint-line"></i> <span class="id-text" id="headerID">ST-2990101</span></span>
+                            <span><i class="ri-smartphone-line"></i> <span id="headerPhone">01012345678</span></span>
+                            <span><i class="ri-mail-line"></i> <span id="headerEmail">ahmed@student.edu</span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- تم دمج زر الإغلاق مع أزرار الإجراءات ليكون متناسقاً وبنفس الحجم -->
+                <div class="header-actions">
+                    <div class="user-actions-row">
+                        <button class="action-btn print-card" onclick="printStudentCard()" title="طباعة الكارنيه">
+                            <i class="ri-printer-line"></i> طباعة
+                        </button>
+                        <button class="action-btn wa" onclick="window.open('https://wa.me/20' + studentProfile.phone, '_blank')" title="مراسلة عبر واتساب">
+                            <i class="ri-whatsapp-line"></i> محادثة
+                        </button>
+                        <button class="action-btn msg" onclick="showToastMsg('لا توجد إشعارات جديدة حالياً', 'success')" title="إشعارات">
+                            <i class="ri-notification-3-line"></i>
+                        </button>
+                        <button class="action-btn close" onclick="closeProfile()" title="إغلاق الملف">
+                            <i class="ri-close-line"></i> إغلاق
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-content">
+                
+                <div class="tabs-container">
+                    <button class="tab-btn active" onclick="switchTab(this, 'overview')">نظرة عامة</button>
+                    <button class="tab-btn" onclick="switchTab(this, 'finance')">السجل المالي</button>
+                    <button class="tab-btn" onclick="switchTab(this, 'documents')">المستندات والأرشيف</button>
+                    <button class="tab-btn" onclick="switchTab(this, 'edit')">البيانات والإعدادات</button>
+                </div>
+
+                <!-- Tab 1: Overview -->
+                <div class="tab-pane active" id="overview">
+                    
+                    <div class="kpi-wrapper">
+                        <div class="kpi-box" id="resultCard" onclick="openResultModal()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none;">
+                            <div class="kpi-label" style="color: rgba(255,255,255,0.9);">
+                                <i class="ri-award-fill" style="color: white;"></i> 
+                                نتيجة الطالب
+                            </div>
+                            <div class="kpi-value" style="color: white; font-size: 2rem; text-align: center;">
+                                <span id="overviewResult">ناجح</span>
+                            </div>
+                            <div class="kpi-subtext" style="color: rgba(255,255,255,0.8); justify-content: center; font-size: 1.2rem; margin-top: 10px; flex-direction: column; gap: 5px;">
+                                <span id="overviewScore">140 / 200</span>
+                                <span id="overviewRating" style="font-size: 1rem; background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 20px;">جيد</span>
+                            </div>
+                        </div>
+                        
+                        <div class="kpi-box">
+                            <div class="kpi-label"><i class="ri-calendar-check-line" style="color:var(--success)"></i> سجل الحضور</div>
+                            <div class="kpi-value"><span id="overviewAttendance">95</span>%</div>
+                            <div class="progress-bar-bg"><div class="progress-bar-fill" id="attProgress" style="width: 95%; background: var(--success);"></div></div>
+                            <span class="kpi-subtext" style="margin-top:5px; color:var(--success)"><i class="ri-checkbox-circle-line"></i> منتظم في الحضور</span>
+                        </div>
+
+                        <div class="kpi-box">
+                            <div class="kpi-label"><i class="ri-wallet-3-line" style="color:var(--warning)"></i> الرسوم المسددة</div>
+                            <div class="kpi-value" id="overview-paid">5,000 <span style="font-size:1rem; color:var(--text-muted);">ج.م</span></div>
+                            <div class="progress-bar-bg"><div class="progress-bar-fill" id="overview-progress" style="width: 71%; background: var(--warning);"></div></div>
+                            <span class="kpi-subtext" style="margin-top:5px; color:var(--danger)"><i class="ri-time-line"></i> متبقي: <span id="overview-remain">2,000</span> ج.م</span>
+                        </div>
+                    </div>
+
+                    <div id="resultModal" class="inner-modal-overlay" style="display: none;" onclick="if(event.target===this) closeResultModal()">
+                        <div class="modal-content" onclick="event.stopPropagation()">
+                            <h3><i class="ri-graduation-cap-fill" style="color: var(--primary);"></i> تعديل نتيجة الطالب</h3>
+                            <div class="form-group">
+                                <label>المجموع الحالي للطالب</label>
+                                <input type="number" id="currentScore" class="input-clean" min="0" step="0.5" value="140">
+                            </div>
+                            <div class="form-group">
+                                <label>المجموع الكلي</label>
+                                <input type="number" id="totalScore" class="input-clean" min="0" step="0.5" value="200">
+                            </div>
+                            <div class="form-group" style="background: var(--bg-alt); padding: 10px; border-radius: var(--radius-sm);">
+                                <label style="color: var(--primary);">معاينة التقدير:</label>
+                                <div style="font-size: 1.2rem; font-weight: 800; color: var(--dark);" id="ratingPreview">جيد</div>
+                            </div>
+                            <div class="modal-actions">
+                                <button class="btn-cancel" onclick="closeResultModal()">إلغاء</button>
+                                <button class="btn-save" onclick="saveResult()">حفظ التغييرات</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="overview-grid">
+                        <div class="overview-panel">
+                            <div class="panel-heading"><i class="ri-git-commit-line" style="color:var(--primary)"></i> خرائط الأحداث للحساب</div>
+                            <div class="timeline" id="dynamicTimeline">
+                                <!-- Injected via JS -->
+                            </div>
+                        </div>
+
+                        <div class="overview-panel">
+                            <div class="panel-heading"><i class="ri-sticky-note-line" style="color:var(--warning)"></i> ملاحظات و مذكرات</div>
+                            <div class="notes-list" id="notesList">
+                                <!-- Injected via JS -->
+                            </div>
+                            <form class="add-note-box" onsubmit="event.preventDefault(); addNote();">
+                                <input type="text" id="noteInput" placeholder="اكتب ملاحظة سريعة هنا..." required>
+                                <button type="submit" title="إرسال الملاحظة"><i class="ri-send-plane-fill"></i></button>
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Tab 2: Finance -->
+                <div class="tab-pane" id="finance">
+                    <div class="fin-summary-grid">
+                        <div class="fin-card total">
+                            <span>المصروف الإجمالي</span>
+                            <strong class="amount"><span id="fin-total">7,000</span> <span style="font-size:0.9rem; font-weight:600; color:var(--text-muted)">ج.م</span></strong>
+                        </div>
+                        <div class="fin-card paid">
+                            <span>الإجمالي المدفوع</span>
+                            <strong class="amount"><span id="fin-paid">5,000</span> <span style="font-size:0.9rem; font-weight:600; color:var(--text-muted)">ج.م</span></strong>
+                        </div>
+                        <div class="fin-card remain">
+                            <span>المبلغ المتبقي</span>
+                            <strong class="amount"><span id="fin-remain">2,000</span> <span style="font-size:0.9rem; font-weight:600; color:var(--text-muted)">ج.م</span></strong>
+                        </div>
+                    </div>
+
+                    <div class="fin-layout">
+                        <div class="fin-panel">
+                            <div class="fin-panel-header">
+                                <span class="fin-panel-title"><i class="ri-add-circle-fill" style="color:var(--success)"></i> تسجيل دفعة جديدة</span>
+                            </div>
+                            <form id="paymentForm">
+                                <div class="form-group" style="margin-bottom: 15px;">
+                                    <label>قيمة الدفعة</label>
+                                    <input type="number" id="payAmount" class="input-clean" placeholder="0.00" min="1" required>
+                                </div>
+                                <div class="form-group" style="margin-bottom: 15px;">
+                                    <label>التاريخ</label>
+                                    <input type="date" id="payDate" class="input-clean" required>
+                                </div>
+                                <div class="form-group" style="margin-bottom: 20px;">
+                                    <label>البيان / ملاحظات</label>
+                                    <input type="text" id="payNote" class="input-clean" placeholder="مثال: قسط ترم أول" required>
+                                </div>
+                                <button type="submit" class="btn-primary" style="width:100%; justify-content: center; background:var(--success);"><i class="ri-check-line"></i> إضافة السداد</button>
+                            </form>
+                        </div>
+
+                        <div class="fin-panel">
+                            <div class="fin-panel-header">
+                                <span class="fin-panel-title"><i class="ri-file-list-3-fill" style="color:var(--primary)"></i> السجل المالي</span>
+                                <div style="display: flex; gap: 8px;">
+                                    <button type="button" class="action-btn" style="padding: 6px 12px; font-size:0.8rem;" onclick="window.print()"><i class="ri-printer-line" style="color:var(--dark)"></i> طباعة</button>
+                                    <button type="button" class="action-btn" style="padding: 6px 12px; font-size:0.8rem;" onclick="exportFinanceToCSV()"><i class="ri-file-excel-2-line" style="color:var(--success)"></i> تصدير</button>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="fin-table">
+                                    <thead>
+                                        <tr>
+                                            <th>التاريخ</th>
+                                            <th>البيان</th>
+                                            <th>المبلغ</th>
+                                            <th>الحالة</th>
+                                            <th style="text-align: center;">إجراء</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="finTableBody">
+                                        <!-- Dynamic Rows -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 3: Documents -->
+                <div class="tab-pane" id="documents">
+                    <div class="section-header">
+                        <h3 class="section-title"><i class="ri-folder-open-line"></i> الأرشيف والمستندات</h3>
+                    </div>
+
+                    <div id="docUploadSection" class="upload-zone" onclick="document.getElementById('docUpload').click()">
+                        <i class="ri-cloud-upload-line"></i>
+                        <p>اسحب وأفلت الملفات هنا أو <span>استعرض من جهازك</span></p>
+                        <!-- تم إضافة دعم ملفات txt -->
+                        <input type="file" hidden id="docUpload" accept=".pdf,.jpg,.jpeg,.png,.txt" onchange="handleFileSelect(event)">
+                    </div>
+
+                    <div id="docDetailsForm" class="doc-smart-form">
+                        <div class="doc-smart-header">
+                            <i class="ri-file-edit-fill"></i> إكمال بيانات المستند المرفوع
+                        </div>
+                        <div class="file-name-preview" id="selectedFileName">filename.pdf</div>
+                        
+                        <div class="form-grid" style="margin-bottom: 20px;">
+                            <!-- تم تطبيق القائمة المنسدلة المخصصة المتناسقة مع النظام بدلاً من select -->
+                            <div class="form-group span-full">
+                                <label>نوع المستند المرفق <span style="color:var(--danger)">*</span></label>
+                                <div class="custom-dropdown" id="docTypeBox" tabindex="0">
+                                    <div class="input-clean dropdown-trigger" id="docTypeDisplay" style="color:var(--text-muted)">-- حدد نوع المستند -- <i class="ri-arrow-down-s-line"></i></div>
+                                    <input type="hidden" id="docTypeValue" value="">
+                                    <div class="dropdown-menu" id="docTypeMenu"></div>
+                                </div>
+                            </div>
+                            <div class="form-group span-full" id="customDocInputWrapper" style="display: none;">
+                                <label>اسم المستند <span style="color:var(--danger)">*</span></label>
+                                <input type="text" id="customDocName" class="input-clean" placeholder="اكتب اسم المستند هنا...">
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; gap: 10px;">
+                            <button type="button" class="btn-primary" onclick="confirmDocUpload()"><i class="ri-save-3-line"></i> حفظ في الأرشيف</button>
+                            <button type="button" class="btn-cancel" style="padding: 10px 20px;" onclick="cancelDocUpload()"><i class="ri-close-line"></i> إلغاء</button>
+                        </div>
+                    </div>
+
+                    <div class="docs-grid" id="docsGrid">
+                        <!-- ملف وهمي: صورة (تنسيق مطابق للصورة المرفقة) -->
+                        <div class="doc-card">
+                            <div class="doc-info-wrap">
+                                <div class="doc-icon img"><i class="ri-image-2-fill"></i></div>
+                                <div class="doc-details">
+                                    <h4>صورة شخصية (نموذج)</h4>
+                                    <span>تم الرفع: اليوم - 1.2MB</span>
+                                </div>
+                            </div>
+                            <div class="doc-actions">
+                                <button class="doc-btn view" title="عرض" onclick="viewDoc('https://images.unsplash.com/photo-1511367461989-f85a21fda167?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80', 'image/jpeg', 'صورة شخصية')"><i class="ri-eye-line"></i></button>
+                                <button class="doc-btn" title="تحميل"><i class="ri-download-2-line"></i></button>
+                                <button class="doc-btn del" title="حذف" onclick="deleteDoc(this)"><i class="ri-delete-bin-line"></i></button>
+                            </div>
+                        </div>
+                        <!-- ملف وهمي: PDF (تنسيق مطابق للصورة المرفقة) -->
+                        <div class="doc-card">
+                            <div class="doc-info-wrap">
+                                <div class="doc-icon"><i class="ri-file-pdf-2-fill"></i></div>
+                                <div class="doc-details">
+                                    <h4>دليل التسجيل (نموذج)</h4>
+                                    <span>تم الرفع: أمس - 3.5MB</span>
+                                </div>
+                            </div>
+                            <div class="doc-actions">
+                                <button class="doc-btn view" title="عرض" onclick="viewDoc('https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf', 'application/pdf', 'دليل التسجيل')"><i class="ri-eye-line"></i></button>
+                                <button class="doc-btn" title="تحميل"><i class="ri-download-2-line"></i></button>
+                                <button class="doc-btn del" title="حذف" onclick="deleteDoc(this)"><i class="ri-delete-bin-line"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 4: Settings -->
+                <div class="tab-pane" id="edit">
+                    
+                    <div class="form-section">
+                        <div class="form-section-title"><i class="ri-profile-line"></i> البيانات الشخصية</div>
+                        <form id="personalForm" onsubmit="event.preventDefault(); savePersonalData();">
+                            <div class="form-grid">
+                                <div class="form-group span-full"><label>الاسم الرباعي</label><input type="text" id="editName" class="input-clean" required></div>
+                                <div class="form-group"><label>الرقم القومي (لا يمكن تعديله)</label><input type="text" id="editID" class="input-clean" disabled></div>
+                                <div class="form-group"><label>تاريخ الميلاد</label><input type="date" id="editDOB" class="input-clean" required></div>
+                                <div class="form-group"><label>رقم الهاتف</label><input type="tel" id="editPhone" class="input-clean" required></div>
+                                <div class="form-group"><label>البريد الإلكتروني</label><input type="email" id="editEmail" class="input-clean" required></div>
+                                <div class="form-group">
+                                    <label>المحافظة / الدولة <span style="color:var(--danger)">*</span></label>
+                                    <div class="custom-dropdown" id="profRegionBox" tabindex="0">
+                                        <div class="input-clean dropdown-trigger" id="profRegionDisplay">القاهرة <i class="ri-arrow-down-s-line"></i></div>
+                                        <input type="hidden" id="profRegionValue" value="القاهرة">
+                                        <div class="dropdown-menu" id="profRegionMenu"></div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>العنوان التفصيلي <span style="color:var(--danger)">*</span></label>
+                                    <input type="text" id="editAddress" class="input-clean" required>
+                                </div>
+                            </div>
+                            <div class="form-actions"><button type="submit" class="btn-primary"><i class="ri-save-3-line"></i> حفظ البيانات الشخصية</button></div>
+                        </form>
+                    </div>
+
+                    <div class="form-section">
+                        <div class="form-section-title"><i class="ri-book-open-line"></i> السجل الأكاديمي</div>
+                        <form onsubmit="event.preventDefault(); saveAcademicData();">
+                            <div class="form-grid">
+                                <div class="form-group span-full"><label>التخصص الأكاديمي</label><input type="text" id="editMajor" class="input-clean" required></div>
+                                
+                                <div class="form-group">
+                                    <label>المسار</label>
+                                    <div class="custom-dropdown" id="pathBox" tabindex="0">
+                                        <div class="input-clean dropdown-trigger" id="pathDisplay">استكمال <i class="ri-arrow-down-s-line"></i></div>
+                                        <input type="hidden" id="pathValue" value="استكمال">
+                                        <div class="dropdown-menu" id="pathMenu"></div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>الترم الدراسي</label>
+                                    <div class="custom-dropdown" id="termBox" tabindex="0">
+                                        <div class="input-clean dropdown-trigger" id="termDisplay">ترم ثالث <i class="ri-arrow-down-s-line"></i></div>
+                                        <input type="hidden" id="termValue" value="ترم ثالث">
+                                        <div class="dropdown-menu" id="termMenu"></div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>الموقف التجنيدي</label>
+                                    <div class="custom-dropdown" id="milBox" tabindex="0">
+                                        <div class="input-clean dropdown-trigger" id="milDisplay">طالب (مؤجل) <i class="ri-arrow-down-s-line"></i></div>
+                                        <input type="hidden" id="milValue" value="طالب (مؤجل)">
+                                        <div class="dropdown-menu" id="milMenu"></div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>الحالة الأكاديمية</label>
+                                    <div class="custom-dropdown" id="statusBox" tabindex="0">
+                                        <div class="input-clean dropdown-trigger" id="statusDisplay">نشط <i class="ri-arrow-down-s-line"></i></div>
+                                        <input type="hidden" id="statusValue" value="نشط">
+                                        <div class="dropdown-menu" id="statusMenu"></div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>النتيجة</label>
+                                    <div class="custom-dropdown" id="resultBox" tabindex="0">
+                                        <div class="input-clean dropdown-trigger" id="resultDisplay">ناجح <i class="ri-arrow-down-s-line"></i></div>
+                                        <input type="hidden" id="resultValue" value="ناجح">
+                                        <div class="dropdown-menu" id="resultMenu"></div>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label>الحالة المالية (عام)</label>
+                                    <div class="custom-dropdown" id="financeStatusBox" tabindex="0">
+                                        <div class="input-clean dropdown-trigger" id="financeStatusDisplay">مسدد <i class="ri-arrow-down-s-line"></i></div>
+                                        <input type="hidden" id="financeStatusValue" value="مسدد">
+                                        <div class="dropdown-menu" id="financeStatusMenu"></div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="form-actions"><button type="submit" class="btn-primary"><i class="ri-save-3-line"></i> تحديث السجل الأكاديمي</button></div>
+                        </form>
+                    </div>
+
+                    <div class="form-section" style="margin-bottom: 0;">
+                        <div class="form-section-title"><i class="ri-shield-keyhole-line"></i> بيانات الدخول للحساب</div>
+                        
+                        <p class="info-note">
+                            <i class="ri-information-fill" style="font-size: 1.2rem;"></i>
+                            ملاحظة: حظر الحساب من القائمة العلوية سيمنع الطالب من الدخول إلى المنصة نهائياً، إلا في حالة تنشيطه مرة أخرى.
+                        </p>
+                        
+                        <form onsubmit="event.preventDefault(); showToastMsg('تم تغيير كلمة المرور بنجاح', 'success'); addTimelineEvent('تم تحديث كلمة المرور للحساب.', 'done'); this.reset();">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>اسم المستخدم (ID)</label>
+                                    <input type="text" class="input-clean" value="ST-2990101" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label>تعيين كلمة مرور جديدة</label>
+                                    <input type="password" class="input-clean" placeholder="اتركه فارغاً إن لم ترد التغيير" required minlength="6">
+                                </div>
+                            </div>
+                            <div class="form-actions"><button type="submit" class="btn-primary" style="background:var(--dark)"><i class="ri-lock-password-line"></i> تغيير كلمة المرور</button></div>
+                        </form>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div> <!-- نهاية خلفية المنبثق -->
+
+    <!-- Document Viewer Modal -->
+    <div class="inner-modal-overlay" id="docViewerModal" style="display: none; z-index: 100000;" onclick="if(event.target===this) closeDocViewer()">
+        <div class="modal-content" style="width: 90%; height: 90vh; max-width: 1000px; display: flex; flex-direction: column; padding: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h3 id="docViewerTitle" style="margin: 0; color: var(--primary);"><i class="ri-file-search-line"></i> عرض المستند</h3>
+                <button class="btn-cancel" style="padding: 8px 12px; background: #f1f5f9; border: none; border-radius: 8px; cursor: pointer; color: var(--danger); font-weight: bold;" onclick="closeDocViewer()"><i class="ri-close-line" style="font-size: 1.2rem;"></i> إغلاق</button>
+            </div>
+            <div id="docViewerContainer" style="flex: 1; background: #f8fafc; border: 2px dashed var(--border); border-radius: var(--radius-md); overflow: hidden; display: flex; align-items: center; justify-content: center; position: relative;">
+                <!-- Iframe / Img will be injected here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast" class="toast"><i class="ri-checkbox-circle-fill" id="toast-icon"></i> <span id="toast-text">رسالة</span></div>
+
+    <script>
+        // --- الفتح والإغلاق ---
+        function openProfile() {
+            document.getElementById('mainOverlayBg').style.display = 'flex';
+        }
+
+        function closeProfile() {
+            document.getElementById('mainOverlayBg').style.display = 'none';
+        }
+
+        // --- حماية من XSS ---
+        function escapeHTML(str) {
+            return str.replace(/[&<>'"]/g, 
+                tag => ({
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    "'": '&#39;',
+                    '"': '&quot;'
+                }[tag])
+            );
+        }
+
+        // --- رفع الصورة ---
+        function updateProfilePic(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const newImgSrc = e.target.result;
+                    document.getElementById('mainProfilePic').src = newImgSrc;
+                    showToastMsg('تم تحديث الصورة الشخصية بنجاح', 'success');
+                    addTimelineEvent('تم تحديث الصورة الشخصية للطالب.', 'done');
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // --- البيانات الأساسية ---
+        let studentProfile = {
+            name: "أحمد محمد علي عبد الرحمن",
+            id: "ST-2990101",
+            phone: "01012345678",
+            email: "ahmed@student.edu",
+            dob: "1999-01-01",
+            region: "القاهرة",
+            address: "مدينة نصر - ش عباس العقاد",
+            major: "تكنولوجيا المعلومات والذكاء الاصطناعي",
+            path: "استكمال",
+            term: "ترم ثالث",
+            military: "طالب (مؤجل)",
+            result: "ناجح",
+            academicStatus: "نشط",
+            financeStatus: "مسدد",
+            attendance: 95,
+            currentScore: 140,
+            totalScore: 200,
+            rating: "جيد"
+        };
+
+        function calculateRating(current, total) {
+            if (total <= 0) return "غير محدد";
+            const percentage = (current / total) * 100;
+            if (percentage >= 90) return "ممتاز";
+            if (percentage >= 80) return "جيد جداً";
+            if (percentage >= 70) return "جيد";
+            if (percentage >= 60) return "مقبول";
+            if (percentage >= 50) return "ضعيف";
+            return "ضعيف جداً";
+        }
+
+        // تم إصلاح دالة تحديث النتيجة لكي تحترم الاختيار اليدوي من السجل الأكاديمي
+        function updateResultDisplay() {
+            const current = studentProfile.currentScore || 0;
+            const total = studentProfile.totalScore || 1;
+            
+            document.getElementById('overviewScore').innerText = `${current} / ${total}`;
+            document.getElementById('overviewRating').innerText = studentProfile.rating;
+            
+            // قراءة النتيجة المخزنة بدلاً من حسابها إجبارياً هنا لكي يعمل السجل الأكاديمي
+            document.getElementById('overviewResult').innerText = studentProfile.result;
+            
+            const resultBox = document.getElementById('resultCard');
+            if(studentProfile.result === 'ناجح') {
+                resultBox.style.background = 'linear-gradient(135deg, #059669 0%, #10b981 100%)';
+            } else if(studentProfile.result === 'راسب') {
+                resultBox.style.background = 'linear-gradient(135deg, #dc2626 0%, #ef4444 100%)';
+            } else {
+                resultBox.style.background = 'linear-gradient(135deg, #64748b 0%, #94a3b8 100%)'; // رمادي في حالة "لم يحدد بعد"
+            }
+            
+            document.getElementById('resultDisplay').innerHTML = `${studentProfile.result} <i class="ri-arrow-down-s-line"></i>`;
+            document.getElementById('resultValue').value = studentProfile.result;
+        }
+
+        function openResultModal() {
+            document.getElementById('currentScore').value = studentProfile.currentScore;
+            document.getElementById('totalScore').value = studentProfile.totalScore;
+            updateRatingPreview();
+            document.getElementById('resultModal').style.display = 'flex';
+        }
+
+        function closeResultModal() {
+            document.getElementById('resultModal').style.display = 'none';
+        }
+
+        function updateRatingPreview() {
+            const current = parseFloat(document.getElementById('currentScore').value) || 0;
+            const total = parseFloat(document.getElementById('totalScore').value) || 1;
+            const rating = calculateRating(current, total);
+            document.getElementById('ratingPreview').innerText = rating;
+        }
+
+        function saveResult() {
+            const current = parseFloat(document.getElementById('currentScore').value) || 0;
+            const total = parseFloat(document.getElementById('totalScore').value) || 1;
+            
+            studentProfile.currentScore = current;
+            studentProfile.totalScore = total;
+            studentProfile.rating = calculateRating(current, total);
+            
+            // حساب النتيجة تلقائياً هنا فقط عند تعديل الدرجات
+            const percentage = (current / total) * 100;
+            if (percentage >= 50) {
+                studentProfile.result = "ناجح";
+            } else {
+                studentProfile.result = "راسب";
+            }
+            
+            updateResultDisplay();
+            closeResultModal();
+            
+            showToastMsg('تم تحديث نتيجة الطالب بنجاح', 'success');
+            addTimelineEvent(`تم تحديث نتيجة الطالب: ${current}/${total} - ${studentProfile.rating}`, 'done');
+        }
+
+        document.getElementById('currentScore')?.addEventListener('input', updateRatingPreview);
+        document.getElementById('totalScore')?.addEventListener('input', updateRatingPreview);
+
+        function updateUIFromData() {
+            document.getElementById('headerName').innerText = studentProfile.name;
+            document.getElementById('headerID').innerText = studentProfile.id;
+            document.getElementById('headerPhone').innerText = studentProfile.phone;
+            document.getElementById('headerEmail').innerText = studentProfile.email;
+
+            updateResultDisplay();
+            
+            document.getElementById('overviewAttendance').innerText = studentProfile.attendance;
+            document.getElementById('attProgress').style.width = `${studentProfile.attendance}%`;
+
+            document.getElementById('editName').value = studentProfile.name;
+            document.getElementById('editID').value = studentProfile.id;
+            document.getElementById('editDOB').value = studentProfile.dob;
+            document.getElementById('editPhone').value = studentProfile.phone;
+            document.getElementById('editEmail').value = studentProfile.email;
+            document.getElementById('editAddress').value = studentProfile.address;
+            document.getElementById('editMajor').value = studentProfile.major;
+
+            document.getElementById('profRegionDisplay').innerHTML = `${studentProfile.region} <i class="ri-arrow-down-s-line"></i>`;
+            document.getElementById('profRegionValue').value = studentProfile.region;
+            
+            document.getElementById('pathDisplay').innerHTML = `${studentProfile.path} <i class="ri-arrow-down-s-line"></i>`;
+            document.getElementById('pathValue').value = studentProfile.path;
+
+            document.getElementById('termDisplay').innerHTML = `${studentProfile.term} <i class="ri-arrow-down-s-line"></i>`;
+            document.getElementById('termValue').value = studentProfile.term;
+
+            document.getElementById('milDisplay').innerHTML = `${studentProfile.military} <i class="ri-arrow-down-s-line"></i>`;
+            document.getElementById('milValue').value = studentProfile.military;
+
+            document.getElementById('statusDisplay').innerHTML = `${studentProfile.academicStatus} <i class="ri-arrow-down-s-line"></i>`;
+            document.getElementById('statusValue').value = studentProfile.academicStatus;
+
+            document.getElementById('resultDisplay').innerHTML = `${studentProfile.result} <i class="ri-arrow-down-s-line"></i>`;
+            document.getElementById('resultValue').value = studentProfile.result;
+
+            document.getElementById('financeStatusDisplay').innerHTML = `${studentProfile.financeStatus} <i class="ri-arrow-down-s-line"></i>`;
+            document.getElementById('financeStatusValue').value = studentProfile.financeStatus;
+        }
+
+        function savePersonalData() {
+            studentProfile.name = document.getElementById('editName').value;
+            studentProfile.dob = document.getElementById('editDOB').value;
+            studentProfile.phone = document.getElementById('editPhone').value;
+            studentProfile.email = document.getElementById('editEmail').value;
+            studentProfile.region = document.getElementById('profRegionValue').value;
+            studentProfile.address = document.getElementById('editAddress').value;
+            
+            updateUIFromData();
+            showToastMsg('تم حفظ البيانات الشخصية', 'success'); 
+            addTimelineEvent('تم تحديث البيانات الشخصية للطالب.', 'done');
+        }
+
+        function saveAcademicData() {
+            studentProfile.major = document.getElementById('editMajor').value;
+            studentProfile.path = document.getElementById('pathValue').value;
+            studentProfile.term = document.getElementById('termValue').value;
+            studentProfile.military = document.getElementById('milValue').value;
+            studentProfile.academicStatus = document.getElementById('statusValue').value;
+            studentProfile.result = document.getElementById('resultValue').value;
+            studentProfile.financeStatus = document.getElementById('financeStatusValue').value;
+            
+            updateUIFromData();
+            showToastMsg('تم تحديث السجل الأكاديمي', 'success'); 
+            addTimelineEvent('تم تعديل بيانات السجل الأكاديمي.', 'done');
+        }
+
+        // --- التبديل بين التبويبات ---
+        function switchTab(btn, tabId) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        // --- إعداد القوائم المنسدلة ---
+        function setupDropdown(boxId, displayId, hiddenId, menuId, options, callback = null) {
+            const box = document.getElementById(boxId);
+            const menu = document.getElementById(menuId);
+            const display = document.getElementById(displayId);
+            const hidden = document.getElementById(hiddenId);
+            
+            if (!box || !menu || !display || !hidden) return; 
+            
+            menu.innerHTML = options.map(o => `<div class="dropdown-item ${o === hidden.value ? 'selected' : ''}" data-val="${o}"><span>${o}</span><i class="ri-check-line"></i></div>`).join('');
+            
+            box.onclick = (e) => {
+                e.stopPropagation();
+                const isOpening = !box.classList.contains('open');
+                
+                document.querySelectorAll('.custom-dropdown').forEach(d => { 
+                    d.classList.remove('open'); 
+                    const m = d.querySelector('.dropdown-menu');
+                    if(m) m.classList.remove('show');
+                    if(d.closest('.form-group')) d.closest('.form-group').style.zIndex = "1";
+                });
+                
+                if(isOpening) {
+                    box.classList.add('open');
+                    if(box.closest('.form-group')) box.closest('.form-group').style.zIndex = "1000"; 
+                    menu.classList.add('show');
+                }
+            };
+
+            box.addEventListener('keydown', function(e) {
+                if(e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    box.click();
+                }
+            });
+
+            menu.onclick = (e) => {
+                const item = e.target.closest('.dropdown-item');
+                if(item) {
+                    const val = item.dataset.val;
+                    display.innerHTML = `${val} <i class="ri-arrow-down-s-line"></i>`;
+                    display.style.color = "var(--text-main)";
+                    hidden.value = val;
+                    menu.querySelectorAll('.dropdown-item').forEach(i => i.classList.remove('selected'));
+                    item.classList.add('selected');
+                    if(callback) callback(val);
+                }
+            };
+        }
+
+        const PROVINCES = {"01":"القاهرة","02":"الإسكندرية","03":"بورسعيد","04":"السويس","11":"دمياط","12":"الدقهلية","13":"الشرقية","14":"القليوبية","15":"كفر الشيخ","16":"الغربية","17":"المنوفية","18":"البحيرة","19":"الإسماعيلية","21":"الجيزة","22":"بني سويف","23":"الفيوم","24":"المنيا","25":"أسيوط","26":"سوهاج","27":"قنا","28":"أسوان","29":"الأقصر","31":"البحر الأحمر","32":"الوادي الجديد","33":"مطروح","34":"شمال سيناء","35":"جنوب سيناء","88":"خارج الجمهورية"};
+        const REG_LIST = Object.values(PROVINCES).sort((a,b) => a.localeCompare(b,'ar'));
+
+        setupDropdown('profRegionBox', 'profRegionDisplay', 'profRegionValue', 'profRegionMenu', REG_LIST);
+        setupDropdown('pathBox', 'pathDisplay', 'pathValue', 'pathMenu', ['تأهيلي', 'استكمال']);
+        setupDropdown('termBox', 'termDisplay', 'termValue', 'termMenu', ['ترم أول', 'ترم ثاني', 'ترم ثالث', 'ترم رابع']);
+        setupDropdown('milBox', 'milDisplay', 'milValue', 'milMenu', ['أدى الخدمة', 'طالب (مؤجل)', 'معافى نهائي']);
+        setupDropdown('statusBox', 'statusDisplay', 'statusValue', 'statusMenu', ['نشط', 'مجمد', 'خريج']);
+        setupDropdown('resultBox', 'resultDisplay', 'resultValue', 'resultMenu', ['ناجح', 'راسب', 'لم يحدد بعد']);
+        setupDropdown('financeStatusBox', 'financeStatusDisplay', 'financeStatusValue', 'financeStatusMenu', ['مسدد', 'متأخر', 'لم يحدد']);
+        
+        // إعداد قائمة المستندات المتناسقة الجديدة
+        const docTypesOptions = ['صورة الرقم القومي', 'أصل المؤهل الدراسي', 'إيصال سداد مصروفات', 'شهادة ميلاد', 'أخرى (كتابة يدوية)...'];
+        setupDropdown('docTypeBox', 'docTypeDisplay', 'docTypeValue', 'docTypeMenu', docTypesOptions, (val) => {
+            const customWrapper = document.getElementById('customDocInputWrapper');
+            if(val === 'أخرى (كتابة يدوية)...') {
+                customWrapper.style.display = 'flex';
+                document.getElementById('docTypeDisplay').innerHTML = `أخرى (كتابة يدوية)... <i class="ri-arrow-down-s-line"></i>`;
+            } else {
+                customWrapper.style.display = 'none';
+            }
+        });
+
+        // --- حالة الحساب ---
+        function toggleStatusMenu(e) {
+            e.stopPropagation();
+            document.getElementById('headerStatusMenu').classList.toggle('show');
+        }
+
+        function changeAccountStatus(status) {
+            const badge = document.getElementById('mainStatusBadge');
+            const menu = document.getElementById('headerStatusMenu');
+            
+            if(status === 'active') {
+                badge.className = 'status-badge active';
+                badge.innerHTML = '<i class="ri-checkbox-circle-fill"></i> طالب نشط <i class="ri-arrow-down-s-line"></i>';
+                addTimelineEvent('تم تنشيط حساب الطالب والسماح بالوصول.', 'done');
+                showToastMsg('تم تنشيط الحساب بنجاح', 'success');
+            } else {
+                badge.className = 'status-badge blocked';
+                badge.innerHTML = '<i class="ri-close-circle-fill"></i> حساب محظور <i class="ri-arrow-down-s-line"></i>';
+                addTimelineEvent('تم حظر حساب الطالب (إيقاف الدخول للمنصة).', 'danger');
+                showToastMsg('تم حظر الحساب بنجاح', 'error');
+            }
+            menu.classList.remove('show');
+        }
+
+        // إغلاق القوائم عند الضغط خارجها
+        document.addEventListener('click', () => {
+            document.querySelectorAll('.custom-dropdown').forEach(d => {
+                d.classList.remove('open');
+                const m = d.querySelector('.dropdown-menu');
+                if(m) m.classList.remove('show');
+                if(d.closest('.form-group')) d.closest('.form-group').style.zIndex = "1";
+            });
+            const headerMenu = document.getElementById('headerStatusMenu');
+            if(headerMenu) headerMenu.classList.remove('show');
+        });
+
+        // --- النظام المالي ---
+        let financeData = {
+            totalFees: 7000,
+            payments: [ { id: 1, date: '2023-09-01', note: 'الدفعة الأولى (رسوم التسجيل)', amount: 5000, status: 'paid' } ],
+            debts: [ { id: 2, date: '2024-02-15', note: 'قسط الترم الثاني', amount: 2000, status: 'pending' } ]
+        };
+
+        function formatMoney(num) { return new Intl.NumberFormat('en-US').format(num); }
+
+        function renderFinance() {
+            const tableBody = document.getElementById('finTableBody');
+            tableBody.innerHTML = '';
+            let totalPaid = 0; let totalDebt = 0;
+
+            financeData.payments.forEach(p => {
+                totalPaid += p.amount;
+                const dateObj = new Date(p.date);
+                const formattedDate = dateObj.toLocaleDateString('ar-EG', { year: 'numeric', month: 'short', day: 'numeric' });
+                tableBody.innerHTML += `
+                    <tr>
+                        <td>${formattedDate}</td>
+                        <td>${escapeHTML(p.note)}</td>
+                        <td class="amount-col paid">${formatMoney(p.amount)} ج.م</td>
+                        <td><span class="status-tag paid" style="color:var(--success); font-weight:bold"><i class="ri-check-line"></i> مسدد</span></td>
+                        <td style="text-align: center;"><button type="button" class="btn-icon-danger" onclick="deleteRecord('payment', ${p.id})" title="حذف القيد"><i class="ri-delete-bin-line"></i></button></td>
+                    </tr>
+                `;
+            });
+
+            financeData.debts.forEach(d => {
+                totalDebt += d.amount;
+                const dateObj = new Date(d.date);
+                const formattedDate = dateObj.toLocaleDateString('ar-EG', { year: 'numeric', month: 'short', day: 'numeric' });
+                tableBody.innerHTML += `
+                    <tr>
+                        <td>${formattedDate}</td>
+                        <td>${escapeHTML(d.note)}</td>
+                        <td class="amount-col pending">${formatMoney(d.amount)} ج.م</td>
+                        <td><span class="status-tag pending" style="color:var(--danger); font-weight:bold"><i class="ri-time-line"></i> مستحق</span></td>
+                        <td style="text-align: center;"><button type="button" class="btn-icon-danger" onclick="deleteRecord('debt', ${d.id})" title="حذف القيد"><i class="ri-delete-bin-line"></i></button></td>
+                    </tr>
+                `;
+            });
+
+            financeData.totalFees = totalPaid + totalDebt;
+            const percentage = financeData.totalFees > 0 ? Math.round((totalPaid / financeData.totalFees) * 100) : 0;
+
+            document.getElementById('fin-total').innerText = formatMoney(financeData.totalFees);
+            document.getElementById('fin-paid').innerText = formatMoney(totalPaid);
+            document.getElementById('fin-remain').innerText = formatMoney(totalDebt);
+
+            document.getElementById('overview-paid').innerHTML = `${formatMoney(totalPaid)} <span style="font-size:1rem; color:var(--text-muted);">/ ${formatMoney(financeData.totalFees)}</span>`;
+            document.getElementById('overview-remain').innerText = formatMoney(totalDebt);
+            document.getElementById('overview-progress').style.width = `${Math.min(percentage, 100)}%`;
+            
+            if(percentage >= 100) document.getElementById('overview-progress').style.background = 'var(--success)';
+            else document.getElementById('overview-progress').style.background = 'var(--warning)';
+        }
+
+        document.getElementById('paymentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const amount = parseFloat(document.getElementById('payAmount').value);
+            const date = document.getElementById('payDate').value;
+            const note = document.getElementById('payNote').value;
+
+            // تحديث الديون المنطقية عند الدفع
+            if (financeData.debts.length > 0) {
+                let remainingAmount = amount;
+                for (let i = 0; i < financeData.debts.length; i++) {
+                    if (remainingAmount <= 0) break;
+                    if (financeData.debts[i].amount <= remainingAmount) {
+                        remainingAmount -= financeData.debts[i].amount;
+                        financeData.debts.splice(i, 1);
+                        i--; 
+                    } else {
+                        financeData.debts[i].amount -= remainingAmount;
+                        remainingAmount = 0;
+                    }
+                }
+            }
+
+            financeData.payments.unshift({ id: Date.now(), date: date, note: note, amount: amount, status: 'paid' });
+            this.reset();
+            document.getElementById('payDate').valueAsDate = new Date();
+            renderFinance();
+            addTimelineEvent(`تم سداد مبلغ ${formatMoney(amount)} ج.م (${note})`, 'done');
+            showToastMsg('تم إضافة السداد بنجاح', 'success');
+        });
+
+        function deleteRecord(type, id) {
+            if(confirm('هل أنت متأكد من حذف هذا القيد المالي؟')) {
+                let deletedNote = '';
+                if(type === 'payment') {
+                    const item = financeData.payments.find(p => p.id === id);
+                    if(item) deletedNote = item.note;
+                    financeData.payments = financeData.payments.filter(p => p.id !== id);
+                } else {
+                    const item = financeData.debts.find(d => d.id === id);
+                    if(item) deletedNote = item.note;
+                    financeData.debts = financeData.debts.filter(d => d.id !== id);
+                }
+                renderFinance();
+                addTimelineEvent(`تم حذف قيد مالي (${deletedNote})`, 'warning');
+                showToastMsg('تم حذف القيد', 'success');
+            }
+        }
+
+        function exportFinanceToCSV() {
+            if (financeData.payments.length === 0 && financeData.debts.length === 0) {
+                showToastMsg('لا توجد بيانات للتصدير', 'error'); return;
+            }
+            let csvContent = "\uFEFF"; 
+            csvContent += "التاريخ,البيان,المبلغ,الحالة\n";
+            
+            financeData.payments.forEach(p => { csvContent += `${p.date},"${p.note}",${p.amount},مسدد\n`; });
+            financeData.debts.forEach(d => { csvContent += `${d.date},"${d.note}",${d.amount},مستحق\n`; });
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", `سجل_مدفوعات_${studentProfile.name.replace(/ /g, '_')}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToastMsg('تم تنزيل التقرير المالي بنجاح', 'success');
+        }
+
+        // --- سجل الأحداث (Timeline) ---
+        let timelineData = [
+            { id: 3, date: '2024-02-15', text: 'تم استحقاق قسط الترم الثاني (2000 ج.م).', type: 'warning' },
+            { id: 2, date: '2024-01-10', text: 'تم تحديث السجل الأكاديمي (نتيجة الترم الأول).', type: 'done' },
+            { id: 1, date: '2023-09-01', text: 'تم تسجيل الطالب ودفع رسوم الالتحاق.', type: 'done' }
+        ];
+
+        function renderTimeline() {
+            const container = document.getElementById('dynamicTimeline');
+            container.innerHTML = '';
+            const sortedEvents = [...timelineData].sort((a, b) => b.id - a.id);
+            sortedEvents.forEach(event => {
+                const dateObj = new Date(event.date);
+                const formattedDate = dateObj.toLocaleDateString('ar-EG', { year: 'numeric', month: 'short', day: 'numeric' });
+                container.innerHTML += `
+                    <div class="timeline-item ${event.type}">
+                        <div class="timeline-dot"></div>
+                        <span class="timeline-date">${formattedDate}</span>
+                        <div class="timeline-content">${escapeHTML(event.text)}</div>
+                    </div>
+                `;
+            });
+        }
+
+        function addTimelineEvent(text, type = 'done') {
+            timelineData.push({ id: Date.now(), date: new Date().toISOString().split('T')[0], text: text, type: type });
+            renderTimeline();
+        }
+
+        // --- نظام الملاحظات المحدث (Notes) ---
+        let notesData = [
+            { id: 2, sender: 'الإدارة المالية', time: 'منذ يومين', text: 'يرجى تنبيه الطالب بضرورة سداد القسط المتأخر قبل بدء الامتحانات.', isAlert: true },
+            { id: 1, sender: 'شئون الطلاب', time: '10 يناير', text: 'تم استلام أصل شهادة الدبلوم وضمها لملف الطالب الورقي.', isAlert: false }
+        ];
+
+        function renderNotes() {
+            const container = document.getElementById('notesList');
+            container.innerHTML = '';
+            const sortedNotes = [...notesData].sort((a, b) => b.id - a.id);
+            sortedNotes.forEach(note => {
+                container.innerHTML += `
+                    <div class="note-card ${note.isAlert ? 'alert' : ''}" style="animation: fadeIn 0.3s ease;">
+                        <div class="note-header"><span>${escapeHTML(note.sender)}</span> <span>${escapeHTML(note.time)}</span></div>
+                        <div class="note-text">${escapeHTML(note.text)}</div>
+                    </div>
+                `;
+            });
+        }
+
+        function addNote() {
+            const input = document.getElementById('noteInput');
+            const val = input.value.trim();
+            if(val) {
+                notesData.push({
+                    id: Date.now(),
+                    sender: 'الإدارة',
+                    time: 'الآن',
+                    text: val,
+                    isAlert: false
+                });
+                renderNotes();
+                input.value = '';
+                showToastMsg('تم إضافة الملاحظة', 'success');
+            }
+        }
+
+        // --- المستندات (Documents & Viewer) ---
+        let pendingFile = null;
+        let pendingFileUrl = null;
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if(!file) return;
+            pendingFile = file;
+            pendingFileUrl = URL.createObjectURL(file); // مسار وهمي للعرض
+            document.getElementById('selectedFileName').innerText = file.name;
+            document.getElementById('docUploadSection').style.display = 'none';
+            document.getElementById('docDetailsForm').style.display = 'block';
+            
+            // تهيئة القائمة المنسدلة
+            document.getElementById('docTypeValue').value = '';
+            document.getElementById('docTypeDisplay').innerHTML = `-- حدد نوع المستند -- <i class="ri-arrow-down-s-line"></i>`;
+            document.getElementById('docTypeDisplay').style.color = "var(--text-muted)";
+            document.querySelectorAll('#docTypeMenu .dropdown-item').forEach(i => i.classList.remove('selected'));
+            
+            document.getElementById('customDocInputWrapper').style.display = 'none';
+            document.getElementById('customDocName').value = '';
+        }
+
+        function cancelDocUpload() {
+            pendingFile = null;
+            if(pendingFileUrl) URL.revokeObjectURL(pendingFileUrl);
+            pendingFileUrl = null;
+            document.getElementById('docUpload').value = '';
+            document.getElementById('docDetailsForm').style.display = 'none';
+            document.getElementById('docUploadSection').style.display = 'flex';
+        }
+
+        function confirmDocUpload() {
+            if (!pendingFile) { showToastMsg('لا يوجد ملف محدد!', 'error'); return; }
+
+            let docType = document.getElementById('docTypeValue').value;
+            if(!docType) { showToastMsg('يرجى تحديد نوع المستند', 'error'); return; }
+            if(docType === 'أخرى (كتابة يدوية)...') {
+                docType = document.getElementById('customDocName').value.trim();
+                if(!docType) { showToastMsg('يرجى كتابة اسم المستند', 'error'); return; }
+            }
+            
+            const sizeInMB = (pendingFile.size / 1024 / 1024).toFixed(2);
+            const date = new Date().toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' });
+            
+            // دعم استخراج الأيقونات لملفات TXT
+            const isImage = pendingFile.type.startsWith('image/');
+            const isTxt = pendingFile.type === 'text/plain' || pendingFile.name.endsWith('.txt');
+            const iconClass = isImage ? 'img' : (isTxt ? 'txt' : '');
+            const iconName = isImage ? 'ri-image-2-fill' : (isTxt ? 'ri-file-text-fill' : 'ri-file-pdf-2-fill');
+            
+            const safeDocType = escapeHTML(docType);
+            
+            const fileUrl = pendingFileUrl; 
+            const fileType = pendingFile.type;
+
+            // تنسيق الكارت الجديد مطابق للصورة المرفقة
+            const newCardHTML = `
+                <div class="doc-card" style="animation: fadeIn 0.3s ease;">
+                    <div class="doc-info-wrap">
+                        <div class="doc-icon ${iconClass}"><i class="${iconName}"></i></div>
+                        <div class="doc-details">
+                            <h4>${safeDocType}</h4>
+                            <span>تم الرفع: ${date} - ${sizeInMB}MB</span>
+                        </div>
+                    </div>
+                    <div class="doc-actions">
+                        <button class="doc-btn view" title="عرض" onclick="viewDoc('${fileUrl}', '${fileType}', '${safeDocType}')"><i class="ri-eye-line"></i></button>
+                        <button class="doc-btn" title="تحميل"><i class="ri-download-2-line"></i></button>
+                        <button class="doc-btn del" title="حذف" onclick="deleteDoc(this)"><i class="ri-delete-bin-line"></i></button>
+                    </div>
+                </div>
+            `;
+            document.getElementById('docsGrid').insertAdjacentHTML('afterbegin', newCardHTML);
+            showToastMsg('تم حفظ المستند في الأرشيف', 'success');
+            addTimelineEvent(`تم إرفاق مستند جديد لملف الطالب: (${safeDocType})`, 'done');
+            
+            pendingFile = null;
+            document.getElementById('docUpload').value = '';
+            document.getElementById('docDetailsForm').style.display = 'none';
+            document.getElementById('docUploadSection').style.display = 'flex';
+        }
+
+        // --- عارض المستندات المتطور (يدعم TXT, PDF, الصور) ---
+        async function viewDoc(url, type, name) {
+            document.getElementById('docViewerTitle').innerText = name;
+            const container = document.getElementById('docViewerContainer');
+            
+            // إظهار مؤشر التحميل أثناء الجلب
+            container.innerHTML = '<div style="color:var(--primary);"><i class="ri-loader-4-line ri-spin" style="font-size:2rem;"></i></div>';
+            document.getElementById('docViewerModal').style.display = 'flex';
+            
+            if (type.startsWith('image/')) {
+                container.innerHTML = `<img src="${url}" style="max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px;">`;
+            } else if (type === 'application/pdf') {
+                container.innerHTML = `<iframe src="${url}" style="width: 100%; height: 100%; border: none; border-radius: 8px;"></iframe>`;
+            } else if (type === 'text/plain' || name.endsWith('.txt')) {
+                try {
+                    const response = await fetch(url);
+                    const text = await response.text();
+                    container.innerHTML = `<div style="width: 100%; height: 100%; padding: 20px; background: white; border-radius: 8px; overflow-y: auto; text-align: right; direction: rtl; white-space: pre-wrap; font-family: monospace; font-size: 1rem; color: var(--dark); border: 1px solid var(--border);">${escapeHTML(text)}</div>`;
+                } catch(e) {
+                    container.innerHTML = `<div style="text-align: center; color: var(--danger);"><i class="ri-error-warning-line" style="font-size: 3rem;"></i><p>تعذر قراءة محتوى الملف النصي.</p></div>`;
+                }
+            } else {
+                container.innerHTML = `<div style="text-align: center; color: var(--text-muted);"><i class="ri-file-unknow-line" style="font-size: 3rem;"></i><p>لا يمكن معاينة هذا النوع من الملفات داخل المتصفح.</p></div>`;
+            }
+        }
+
+        function closeDocViewer() {
+            document.getElementById('docViewerModal').style.display = 'none';
+            document.getElementById('docViewerContainer').innerHTML = ''; // تفريغ الحاوية لتجنب بقاء الملف في الخلفية
+        }
+
+        function deleteDoc(btn) {
+            if(confirm('هل أنت متأكد من حذف هذا المستند نهائياً؟')) {
+                btn.closest('.doc-card').remove();
+                showToastMsg('تم حذف المستند بنجاح', 'success');
+                addTimelineEvent('تم حذف مستند من الأرشيف.', 'warning');
+            }
+        }
+
+        // --- الإشعارات المنبثقة (Toasts) ---
+        let toastTimeout;
+        function showToastMsg(text, type = 'error') {
+            const toast = document.getElementById('toast');
+            clearTimeout(toastTimeout);
+            
+            toast.classList.remove('show');
+            setTimeout(() => {
+                document.getElementById('toast-text').innerText = text;
+                const icon = document.getElementById('toast-icon');
+                
+                if(type === 'success') {
+                    toast.className = 'toast success show';
+                    icon.className = 'ri-checkbox-circle-fill';
+                    icon.style.color = 'var(--success)';
+                } else if (type === 'warning') {
+                    toast.className = 'toast show';
+                    toast.style.borderRightColor = 'var(--warning)';
+                    icon.className = 'ri-error-warning-fill';
+                    icon.style.color = 'var(--warning)';
+                } else {
+                    toast.className = 'toast error show';
+                    icon.className = 'ri-error-warning-fill';
+                    icon.style.color = 'var(--danger)';
+                }
+                
+                toastTimeout = setTimeout(() => { toast.classList.remove('show'); }, 3000);
+            }, 100);
+        }
+
+        // --- الطباعة الآمنة ---
+        function printStudentCard() {
+            const printWindow = window.open('', '_blank');
+            if(!printWindow) { showToastMsg('يرجى السماح بالنوافذ المنبثقة (Pop-ups)', 'error'); return; }
+
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html dir="rtl">
+                <head>
+                    <title>كارنيه الطالب - ${studentProfile.name}</title>
+                    <style>
+                        body { font-family: 'Tajawal', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; background: #f0f2f5; margin: 0; padding: 20px; }
+                        .card-container { width: 350px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); overflow: hidden; border: 1px solid #e2e8f0; }
+                        .card-header { background: #4f46e5; padding: 20px; text-align: center; color: white; }
+                        .card-header h2 { margin: 0; font-size: 1.3rem; font-weight: 900; }
+                        .card-header p { margin: 5px 0 0; opacity: 0.9; font-size: 0.9rem; }
+                        .card-body { padding: 25px; text-align: center; }
+                        .student-photo { width: 120px; height: 120px; border-radius: 50%; margin: 0 auto 15px; border: 4px solid #4f46e5; overflow: hidden; }
+                        .student-photo img { width: 100%; height: 100%; object-fit: cover; }
+                        .student-name { font-size: 1.3rem; font-weight: 900; color: #0f172a; margin: 10px 0 5px; }
+                        .student-id { background: #f1f5f9; padding: 8px; border-radius: 30px; font-size: 1rem; font-weight: 700; color: #4f46e5; margin: 10px 0; direction: ltr; display: inline-block; }
+                        .info-row { display: flex; justify-content: space-between; margin: 10px 0; padding: 8px 0; border-bottom: 1px dashed #e2e8f0; }
+                        .info-label { font-weight: 600; color: #64748b; }
+                        .info-value { font-weight: 800; color: #0f172a; }
+                        .score-row { background: #f8fafc; padding: 10px; border-radius: 10px; margin: 10px 0; }
+                        .score-row .main-score { font-size: 1.2rem; font-weight: 900; color: #4f46e5; }
+                        .score-row .rating { background: #4f46e5; color: white; padding: 3px 10px; border-radius: 20px; font-size: 0.9rem; display: inline-block; margin-top: 5px; }
+                        .qr-code { margin-top: 20px; padding: 10px; background: #f8fafc; border-radius: 10px; }
+                        .card-footer { background: #f8fafc; padding: 15px; text-align: center; border-top: 1px solid #e2e8f0; font-size: 0.8rem; color: #64748b; }
+                        .print-button { margin-top: 20px; text-align: center; }
+                        @media print {
+                            body { background: white; padding: 0; }
+                            .card-container { box-shadow: none; border: 2px solid #000; }
+                            .no-print { display: none; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="card-container">
+                        <div class="card-header">
+                            <h2>جامعة المستقبل</h2>
+                            <p>كلية تكنولوجيا المعلومات</p>
+                        </div>
+                        <div class="card-body">
+                            <div class="student-photo">
+                                <img src="${document.getElementById('mainProfilePic').src}" alt="Student" onload="window.print()">
+                            </div>
+                            <div class="student-name">${studentProfile.name}</div>
+                            <div class="student-id">${studentProfile.id}</div>
+                            
+                            <div class="score-row">
+                                <div class="main-score">${studentProfile.currentScore} / ${studentProfile.totalScore}</div>
+                                <div class="rating">${studentProfile.rating}</div>
+                            </div>
+                            
+                            <div class="info-row">
+                                <span class="info-label">الفرقة الدراسية:</span>
+                                <span class="info-value">${studentProfile.term || 'ترم ثالث'}</span>
+                            </div>
+                            
+                            <div class="info-row">
+                                <span class="info-label">التخصص:</span>
+                                <span class="info-value">${studentProfile.major || 'تكنولوجيا المعلومات'}</span>
+                            </div>
+                            
+                            <div class="info-row">
+                                <span class="info-label">النتيجة:</span>
+                                <span class="info-value" style="color: ${studentProfile.result === 'ناجح' ? '#059669' : '#dc2626'}; font-weight: 900;">${studentProfile.result || 'ناجح'}</span>
+                            </div>
+                            
+                            <div class="qr-code">
+                                <svg width="80" height="80" viewBox="0 0 100 100">
+                                    <rect width="100" height="100" fill="#f1f5f9" rx="10"/>
+                                    <text x="50" y="55" text-anchor="middle" fill="#4f46e5" font-size="10" font-weight="bold">${studentProfile.id}</text>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <span>صالحة حتى: ${new Date().getFullYear() + 1}-09-30</span>
+                        </div>
+                    </div>
+                    
+                    <div class="print-button no-print">
+                        <button onclick="window.print()" style="background: #4f46e5; color: white; border: none; padding: 12px 30px; border-radius: 30px; font-size: 1rem; font-weight: 700; cursor: pointer; margin-top: 20px;">
+                            🖨️ طباعة الكارنيه
+                        </button>
+                    </div>
+                </body>
+                </html>
+            `);
+            
+            printWindow.document.close();
+            
+            showToastMsg('تم إنشاء الكارنيه للطباعة', 'success');
+            addTimelineEvent('تم طباعة كارنيه الطالب.', 'done');
+        }
+
+        // --- التهيئة الأولى ---
+        window.onload = () => {
+            updateUIFromData();
+            renderFinance();
+            renderTimeline();
+            renderNotes(); 
+            document.getElementById('payDate').valueAsDate = new Date();
+        };
+    </script>
+</body>
+</html>
